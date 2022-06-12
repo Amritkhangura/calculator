@@ -1,8 +1,8 @@
 class Calculator {
   constructor(previousTextElement, currentTextElement){
-    this.previousTextElement = previousTextElement
-    this.currentTextElement = currentTextElement
-    this.clear()
+    this.previousTextElement = previousTextElement;
+    this.currentTextElement = currentTextElement;
+    this.clear();
   }
   clear(){
     this.currentOperand = "";
@@ -16,12 +16,12 @@ class Calculator {
   }
 
   appendNumber(number){
-    if (number === '.' && this.currentOperand.includes('.')) return
+    if (number === '.' && this.currentOperand.includes('.')) return;
     this.currentOperand = this.currentOperand.toString() + number.toString();
   }
 
   chooseOperation(operation){
-    if (this.currentOperand === ' ') return
+    if (this.currentOperand === ' ') return;
     if (this.previousOperand !== ' '){
       this.compute()
     }
@@ -35,7 +35,7 @@ class Calculator {
     let computation;
     const prev = parseFloat(this.previousOperand);
     const curr = parseFloat(this.currentOperand);
-    if(isNaN(prev) || isNaN(curr)) return
+    if(isNaN(prev) || isNaN(curr)) return;
     switch (this.operation) {
       case '+':
         computation = prev + curr;
@@ -58,11 +58,36 @@ class Calculator {
     this.previousOperand;
   }
 
+  getDisplayNumber(number){
+    const stringNumber = number.toString();
+    const integerDigits = parseFloat(stringNumber.split('.')[0]);
+    const decimalDigits = stringNumber.split('.')[1];
+    let integerDisplay;
+    if(isNaN(integerDigits)) {
+      integerDisplay = '';
+    } else {
+      integerDisplay = integerDigits.toLocaleString('en', {
+        maximumFractionDigits: 0 });
+    }
+    if (decimalDigits != null) {
+      return `${integerDisplay}.${decimalDigits}`;
+    } else {
+      return integerDisplay;
+    }
+  }
+
   updateDisplay(){
     this.currentTextElement.innerText = this.currentOperand;
-    this.previousTextElement.innerText = this.previousOperand;
+    if (this.operation != null) {
+      this.previousTextElement.innerText =
+      `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
+    } else {
+      this.previousTextElement.innerText = '';
+    }
+    }
+
   }
-}
+
 
 const numberBtns = document.querySelectorAll('[data-number]');
 const operationsBtns = document.querySelectorAll('[data-operation]');
@@ -89,7 +114,7 @@ operationsBtns.forEach(button => {
 
 equalBtn.addEventListener('click', button => {
   calculator.compute();
-  calculator.updateDisplay()
+  calculator.updateDisplay();
 })
 
 allClearBtn.addEventListener('click', button => {
@@ -98,5 +123,5 @@ allClearBtn.addEventListener('click', button => {
 })
 deleteBtn.addEventListener('click', button => {
   calculator.delete();
-  calculator.updateDisplay()
+  calculator.updateDisplay();
 })
