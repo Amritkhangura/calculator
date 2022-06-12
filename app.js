@@ -11,6 +11,7 @@ class Calculator {
   }
 
   delete(){
+    this.currentOperand = this.currentOperand.toString(). slice(0, -1);
 
   }
 
@@ -20,6 +21,10 @@ class Calculator {
   }
 
   chooseOperation(operation){
+    if (this.currentOperand === ' ') return
+    if (this.previousOperand !== ' '){
+      this.compute()
+    }
     this.operation = operation;
     this.previousOperand = this.currentOperand;
     this.currentOperand = '';
@@ -27,7 +32,30 @@ class Calculator {
   }
 
   compute(){
+    let computation;
+    const prev = parseFloat(this.previousOperand);
+    const curr = parseFloat(this.currentOperand);
+    if(isNaN(prev) || isNaN(curr)) return
+    switch (this.operation) {
+      case '+':
+        computation = prev + curr;
+        break;
+      case '-':
+        computation = prev - curr;
+        break;
+      case '*':
+        computation = prev * curr;
+        break;
+      case '÷':
+        computation = prev / curr;
+        break;
+        default:
+          return
 
+    }
+    this.currentOperand = computation;
+    this.operation = undefined;
+    this.previousOperand;
   }
 
   updateDisplay(){
@@ -57,4 +85,18 @@ operationsBtns.forEach(button => {
     calculator.chooseOperation(button.innerText);
     calculator.updateDisplay();
   })
+})
+
+equalBtn.addEventListener('click', button => {
+  calculator.compute();
+  calculator.updateDisplay()
+})
+
+allClearBtn.addEventListener('click', button => {
+  calculator.clear();
+  calculator.updateDisplay()
+})
+deleteBtn.addEventListener('click', button => {
+  calculator.delete();
+  calculator.updateDisplay()
 })
